@@ -3,10 +3,8 @@ import pathlib
 import serial
 from PIL import Image
 
-NO_IMAGES = 165
-NO_PIXELS = 77760
-NO_EIGENS = 4
-NO_SUBJECT = 16
+SUBJECT_CNT = 16
+EIGENVECTOR_CNT = 4
 
 
 def load_image():
@@ -22,6 +20,9 @@ def main():
     eigenface = serial.Eigenface(image_matrix)
     mean_image = eigenface.execute_reduce()
     eigenface.execute_subtract()
+    eigenface.execute_transpose()
+    eigenface.execute_matmul1()
+    eigenface.execute_eigen(EIGENVECTOR_CNT)
 
 
 if __name__ == "__main__":
