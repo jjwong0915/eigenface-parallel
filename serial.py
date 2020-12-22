@@ -23,7 +23,6 @@ class Trainer:
         self.execute_matmul2()
         self.execute_transpose2()
         self.execute_projection()
-        print(self.real_eigenvector)
         return Model(
             mean_image=self.mean_image,
             transposed_eigenvector=self.transposed_eigenvector,
@@ -78,11 +77,11 @@ class Predictor:
         self.train_weightvector = model.weight_vector
 
     def predict(self, test_image):
-        self.original_image = test_image.transpose()
+        self.original_image = numpy.expand_dims(test_image, axis=0).transpose()
         self.execute_subtract()
         self.execute_projection()
         self.execute_euclidian()
-        return self.nearest_index
+        return self.confidence_list
 
     def execute_subtract(self):
         self.normalized_image = self.original_image - self.mean_image
@@ -98,4 +97,10 @@ class Predictor:
             self.train_weightvector.transpose(),
             self.test_weightvector.transpose(),
         )
-        self.nearest_index = numpy.argmin(distance_matrix, axis=1)
+        image_cnt = self.train_weightvector.shape[1]
+        eigen_cnt = self.train_weightvector.shape[0]
+        self.confidence_list = 1.0 - (
+            (numpy.sum(distance_matrix ** 2, axis=1) / image_cnt * eigen_cnt)
+            ** 0.5
+            / 255
+        )
