@@ -1,4 +1,5 @@
 import numpy
+from scipy import spatial
 
 
 class Model:
@@ -81,7 +82,7 @@ class Predictor:
         self.execute_subtract()
         self.execute_projection()
         self.execute_euclidian()
-        return self.confidence_list
+        return self.nearest_index
 
     def execute_subtract(self):
         self.normalized_image = self.original_image - self.mean_image
@@ -93,12 +94,8 @@ class Predictor:
         )
 
     def execute_euclidian(self):
-        self.confidence_list = numpy.array(
-            [
-                [
-                    numpy.linalg.norm(test_weight - train_weight)
-                    for train_weight in self.train_weightvector.transpose()
-                ]
-                for test_weight in self.test_weightvector.transpose()
-            ]
+        distance_matrix = spatial.distance_matrix(
+            self.train_weightvector.transpose(),
+            self.test_weightvector.transpose(),
         )
+        self.nearest_index = numpy.argmin(distance_matrix, axis=1)

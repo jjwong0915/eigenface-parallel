@@ -19,8 +19,8 @@ def load_dataset():
 def main():
     image_data, image_label = load_dataset()
     model = serial.Trainer(eigenvector_cnt=EIGENVECTOR_CNT).train(image_data)
-    confidence_list = serial.Predictor(model).predict(image_data)
-    print(confidence_list)
+    nearest_index = serial.Predictor(model).predict(image_data)
+    print(nearest_index)
 
 
 if __name__ == "__main__":
