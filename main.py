@@ -19,7 +19,7 @@ def load_dataset():
 def main():
     image_data, image_label = load_dataset()
     model = serial.Trainer(eigenvector_cnt=EIGENVECTOR_CNT).train(image_data)
-    confidence = model.predict(image_data)
+    confidence = serial.Predictor(model).predict(image_data)
 
 
 if __name__ == "__main__":

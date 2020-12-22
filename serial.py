@@ -6,6 +6,12 @@ class Model:
         self.mean_image = mean_image
         self.weight_vector = weight_vector
 
+
+class Predictor:
+    def __init__(self, model):
+        self.mean_image = model.mean_image
+        self.weight_vector = model.weight_vector
+
     def predict(self, test_image):
         pass
 
@@ -23,7 +29,7 @@ class Trainer:
         self.execute_eigen()
         self.execute_matmul2()
         self.execute_transpose2()
-        self.execute_projection1()
+        self.execute_projection()
         return Model(self.mean_image, self.weight_vector)
 
     def execute_reduce(self):
@@ -60,7 +66,7 @@ class Trainer:
     def execute_transpose2(self):
         self.transposed_eigenvector = self.real_eigenvector.transpose()
 
-    def execute_projection1(self):
+    def execute_projection(self):
         self.weight_vector = numpy.matmul(
             self.transposed_eigenvector,
             self.normalized_image,
