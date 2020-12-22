@@ -18,8 +18,7 @@ def load_dataset():
 
 def main():
     image_data, image_label = load_dataset()
-    model = serial.Trainer().train(image_data, eigenvector_cnt=EIGENVECTOR_CNT)
-    print(model.weight_vector)
+    model = serial.Trainer(eigenvector_cnt=EIGENVECTOR_CNT).train(image_data)
     confidence = model.predict(image_data)
 
 

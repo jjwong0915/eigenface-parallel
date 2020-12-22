@@ -11,13 +11,16 @@ class Model:
 
 
 class Trainer:
-    def train(self, train_image, eigenvector_cnt):
+    def __init__(self, eigenvector_cnt):
+        self.eigenvector_cnt = eigenvector_cnt
+
+    def train(self, train_image):
         self.original_image = train_image.transpose()
         self.execute_reduce()
         self.execute_subtract()
         self.execute_transpose1()
         self.execute_matmul1()
-        self.execute_eigen(eigenvector_cnt)
+        self.execute_eigen()
         self.execute_matmul2()
         self.execute_transpose2()
         self.execute_projection1()
@@ -42,10 +45,10 @@ class Trainer:
             self.normalized_image,
         )
 
-    def execute_eigen(self, vector_cnt):
+    def execute_eigen(self):
         values, vectors = numpy.linalg.eig(self.covariance_matrix)
         self.temp_eigenvector = vectors[
-            numpy.argsort(values)[-vector_cnt:]
+            numpy.argsort(values)[-self.eigenvector_cnt :]
         ].transpose()
 
     def execute_matmul2(self):
