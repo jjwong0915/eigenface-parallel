@@ -2,36 +2,57 @@ import numpy
 
 
 class Eigenface:
-    def __init__(self, image_matrix):
-        self.image_matrix = image_matrix
-        print(self.image_matrix)
+    def train(self, train_image, eigenvector_cnt):
+        self.original_image = train_image
+        self.execute_reduce()
+        self.execute_subtract()
+        self.execute_transpose1()
+        self.execute_matmul1()
+        self.execute_eigen(eigenvector_cnt)
+        self.execute_matmul2()
+        self.execute_transpose2()
+        self.execute_projection1()
+        return self.mean_image, self.weight_vector
+
+    def predict(self, test_image, mean_image, weight_vector):
+        pass
 
     def execute_reduce(self):
-        self.mean_image = numpy.mean(self.image_matrix, axis=1, keepdims=True)
-        print(self.mean_image)
-        return self.mean_image
+        self.mean_image = numpy.mean(
+            self.original_image,
+            axis=1,
+            keepdims=True,
+        )
 
     def execute_subtract(self):
-        self.normalized_matrix = self.image_matrix - self.mean_image
-        print(self.normalized_matrix)
+        self.normalized_image = self.original_image - self.mean_image
 
-    def execute_transpose(self):
-        self.transposed_matrix = self.normalized_matrix.transpose()
-        print(self.transposed_matrix)
+    def execute_transpose1(self):
+        self.transposed_image = self.normalized_image.transpose()
 
     def execute_matmul1(self):
         self.covariance_matrix = numpy.matmul(
-            self.transposed_matrix,
-            self.normalized_matrix,
+            self.transposed_image,
+            self.normalized_image,
         )
-        print(self.covariance_matrix)
 
-    def execute_eigen(self, eigenvector_cnt):
+    def execute_eigen(self, vector_cnt):
         values, vectors = numpy.linalg.eig(self.covariance_matrix)
-        self.eigenvector_list = vectors[
-            numpy.argsort(values)[-eigenvector_cnt:]
-        ]
-        print(self.eigenvector_list)
+        self.temp_eigenvector = vectors[
+            numpy.argsort(values)[-vector_cnt:]
+        ].transpose()
 
     def execute_matmul2(self):
-        pass
+        self.real_eigenvector = numpy.matmul(
+            self.normalized_image,
+            self.temp_eigenvector,
+        )
+
+    def execute_transpose2(self):
+        self.transposed_eigenvector = self.real_eigenvector.transpose()
+
+    def execute_projection1(self):
+        self.weight_vector = numpy.matmul(
+            self.transposed_eigenvector,
+            self.normalized_image,
+        )
