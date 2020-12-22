@@ -1,9 +1,18 @@
 import numpy
 
 
-class Eigenface:
+class Model:
+    def __init__(self, mean_image, weight_vector):
+        self.mean_image = mean_image
+        self.weight_vector = weight_vector
+
+    def predict(self, test_image):
+        pass
+
+
+class Trainer:
     def train(self, train_image, eigenvector_cnt):
-        self.original_image = train_image
+        self.original_image = train_image.transpose()
         self.execute_reduce()
         self.execute_subtract()
         self.execute_transpose1()
@@ -12,10 +21,7 @@ class Eigenface:
         self.execute_matmul2()
         self.execute_transpose2()
         self.execute_projection1()
-        return self.mean_image, self.weight_vector
-
-    def predict(self, test_image, mean_image, weight_vector):
-        pass
+        return Model(self.mean_image, self.weight_vector)
 
     def execute_reduce(self):
         self.mean_image = numpy.mean(

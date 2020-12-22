@@ -17,19 +17,10 @@ def load_dataset():
 
 
 def main():
-    image_matrix, image_label = load_dataset()
-    eigenface = serial.Eigenface()
-    mean_image, weight_vector = eigenface.train(
-        train_image=image_matrix.transpose(),
-        eigenvector_cnt=EIGENVECTOR_CNT,
-    )
-    print(mean_image)
-    print(weight_vector)
-    confidence = eigenface.predict(
-        test_image=image_matrix.transpose(),
-        mean_image=mean_image,
-        weight_vector=weight_vector,
-    )
+    image_data, image_label = load_dataset()
+    model = serial.Trainer().train(image_data, eigenvector_cnt=EIGENVECTOR_CNT)
+    print(model.weight_vector)
+    confidence = model.predict(image_data)
 
 
 if __name__ == "__main__":
