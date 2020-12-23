@@ -77,7 +77,7 @@ class Predictor:
         self.train_weightvector = model.weight_vector
 
     def predict(self, test_image):
-        self.original_image = numpy.expand_dims(test_image, axis=0).transpose()
+        self.original_image = test_image.transpose()
         self.execute_subtract()
         self.execute_projection()
         self.execute_euclidian()
@@ -100,7 +100,5 @@ class Predictor:
         image_cnt = self.train_weightvector.shape[1]
         eigen_cnt = self.train_weightvector.shape[0]
         self.confidence_list = 1.0 - (
-            (numpy.sum(distance_matrix ** 2, axis=1) / image_cnt * eigen_cnt)
-            ** 0.5
-            / 255
+            (distance_matrix ** 2 / image_cnt * eigen_cnt) ** 0.5 / 255
         )
